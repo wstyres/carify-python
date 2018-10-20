@@ -59,7 +59,7 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
         print("Creation of the directory %s failed" % outputFolderPath)
         print(e.strerror)
 
-    jsonString = open(os.getcwd() + '/AppIcon.json').read()
+    jsonString = open(os.getcwd() + '/Base/AppIcon.json').read()
 
     data = json.loads(jsonString)
 
@@ -114,7 +114,7 @@ def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
         print("Creation of the directory %s failed" % outputFolderPath)
         print(e.strerror)
 
-    jsonString = open(os.getcwd() + '/Universal.json').read()
+    jsonString = open(os.getcwd() + '/Base/Universal.json').read()
 
     data = json.loads(jsonString)
 
@@ -173,6 +173,6 @@ def createOutputDirectory(outputDirPath):
         print("Creation of the directory %s failed" % outputDirPath)
         print(e.strerror)
 
-    shutil.copy2(os.getcwd() + '/Contents.json', outputDirPath + '/Contents.json')
+    shutil.copy2(os.getcwd() + '/Base/Contents.json', outputDirPath + '/Contents.json')
 
 main();
