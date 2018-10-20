@@ -1,5 +1,5 @@
 do::
-	python3 ~/Projects/carify-python/carify.py ./Assets ./Resources
+	python3 ../carify.py ./Assets ./Resources
 
 TARGET = iphone::10.3:8.0
 
