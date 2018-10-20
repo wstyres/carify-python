@@ -8,7 +8,7 @@ import plistlib
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: ./carify <Assets folder input> <Resources folder output")
+        print("Usage: ./carify <Assets folder input> <Resources folder output>")
     else:
         assetsFolderPath = sys.argv[1]
         resourcesFolderPath = sys.argv[2]
@@ -59,7 +59,7 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
         print("Creation of the directory %s failed" % outputFolderPath)
         print(e.strerror)
 
-    jsonString = open(os.getcwd() + '/Base/AppIcon.json').read()
+    jsonString = open(os.path.dirname(os.path.realpath(__file__)) + '/Base/AppIcon.json').read()
 
     data = json.loads(jsonString)
 
@@ -114,7 +114,7 @@ def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
         print("Creation of the directory %s failed" % outputFolderPath)
         print(e.strerror)
 
-    jsonString = open(os.getcwd() + '/Base/Universal.json').read()
+    jsonString = open(os.path.dirname(os.path.realpath(__file__)) + '/Base/Universal.json').read()
 
     data = json.loads(jsonString)
 
@@ -173,6 +173,6 @@ def createOutputDirectory(outputDirPath):
         print("Creation of the directory %s failed" % outputDirPath)
         print(e.strerror)
 
-    shutil.copy2(os.getcwd() + '/Base/Contents.json', outputDirPath + '/Contents.json')
+    shutil.copy2(os.path.dirname(os.path.realpath(__file__)) + '/Base/Contents.json', outputDirPath + '/Contents.json')
 
 main();
