@@ -9,7 +9,7 @@
 
 	_objects = [[NSMutableArray alloc] init];
 
-	self.title = @"Root View Controller";
+	self.navigationItem.title = @"Root View Controller";
 	self.navigationItem.leftBarButtonItem = self.editButtonItem;
 	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonTapped:)] autorelease];
 }

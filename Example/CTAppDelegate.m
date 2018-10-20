@@ -1,11 +1,11 @@
 #import "CTAppDelegate.h"
-#import "CTRootViewController.h"
+#import "CTTabBarController.h"
 
 @implementation CTAppDelegate
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	_window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-	_rootViewController = [[UINavigationController alloc] initWithRootViewController:[[CTRootViewController alloc] init]];
+	_rootViewController = [[CTTabBarController alloc] init];
 	_window.rootViewController = _rootViewController;
 	[_window makeKeyAndVisible];
 }
