@@ -64,6 +64,9 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
     data = json.loads(jsonString)
 
     for image in images:
+        if image == ".DS_Store":
+            continue
+
         imagePath = directory + "/" + image
         with Image.open(imagePath) as img:
             width, height = img.size
