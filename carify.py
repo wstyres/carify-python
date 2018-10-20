@@ -12,7 +12,7 @@ def main():
     else:
         assetsFolderPath = sys.argv[1]
         resourcesFolderPath = sys.argv[2]
-        outputFolderPath = resourcesFolderPath + "/Assets.xcassets/"
+        outputFolderPath = f"{resourcesFolderPath}/Assets.xcassets/"
 
         createOutputDirectory(outputFolderPath);
 
@@ -36,8 +36,8 @@ def merge_two_dicts(x, y):
     return z
 
 def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
-    tmpLocation = resourcesDirectory + "/tmp.plist"
-    infoLocation = resourcesDirectory + "/Info.plist"
+    tmpLocation = f"{resourcesDirectory}/tmp.plist"
+    infoLocation = f"{resourcesDirectory}/Info.plist"
     call(["/Applications/Xcode.app/Contents/Developer/usr/bin/actool", xcassetsPath, "--compile", resourcesDirectory, "--platform", "iphoneos", "--minimum-deployment-target", "8.0", "--app-icon", "AppIcon", "--output-partial-info-plist", tmpLocation])
     shutil.rmtree(xcassetsPath)
 
@@ -51,12 +51,12 @@ def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
 
 def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-    outputPath = outputFolderPath + "AppIcon.appiconset"
+    outputPath =  f"{outputFolderPath}AppIcon.appiconset"
 
     try:
         os.mkdir(outputPath)
     except OSError as e:
-        print("Creation of the directory %s failed" % outputFolderPath)
+        print(f"Creation of the directory {outputDirPath} failed")
         print(e.strerror)
 
     jsonString = open(os.path.dirname(os.path.realpath(__file__)) + '/Base/AppIcon.json').read()
@@ -67,7 +67,7 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
         if image == ".DS_Store":
             continue
 
-        imagePath = directory + "/" + image
+        imagePath = f"{directory}/{image}"
         with Image.open(imagePath) as img:
             width, height = img.size
 
@@ -109,12 +109,12 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
 def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     dir = os.path.basename(os.path.normpath(directory))
-    outputPath = outputFolderPath + '/' + dir + ".imageset"
+    outputPath = f"{outputFolderPath}/{dir}.imageset"
 
     try:
         os.mkdir(outputPath)
     except OSError as e:
-        print("Creation of the directory %s failed" % outputFolderPath)
+        print(f"Creation of the directory {outputDirPath} failed")
         print(e.strerror)
 
     jsonString = open(os.path.dirname(os.path.realpath(__file__)) + '/Base/Universal.json').read()
@@ -122,7 +122,7 @@ def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
     data = json.loads(jsonString)
 
     for image in images:
-        imagePath = directory + "/" + image
+        imagePath = f"{directory}/{image}"
 
         if image == ".DS_Store":
             continue
@@ -142,7 +142,7 @@ def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
             elif scale == "3x":
                 images[2]["filename"] = image
             else:
-                print("Improper scale for file %s" % imageFilename)
+                print(f"Improper scale for file {imageFilename}")
 
             data["images"] = images
             shutil.copy2(directory + '/' + image, outputPath + '/' + image)
@@ -167,13 +167,13 @@ def insertFilenameIntoDictionaryForSize(filepath, dictionary, size, idiom, scale
 
     dictionary["images"] = images
 
-    shutil.copy2(filepath, output + '/' + filename)
+    shutil.copy2(filepath, f"{output}/{filename}")
 
 def createOutputDirectory(outputDirPath):
     try:
         os.mkdir(outputDirPath)
     except OSError as e:
-        print("Creation of the directory %s failed" % outputDirPath)
+        print(f"Creation of the directory {outputDirPath} failed")
         print(e.strerror)
 
     shutil.copy2(os.path.dirname(os.path.realpath(__file__)) + '/Base/Contents.json', outputDirPath + '/Contents.json')
