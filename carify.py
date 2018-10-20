@@ -41,11 +41,13 @@ def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
     call(["/Applications/Xcode.app/Contents/Developer/usr/bin/actool", xcassetsPath, "--compile", resourcesDirectory, "--platform", "iphoneos", "--minimum-deployment-target", "8.0", "--app-icon", "AppIcon", "--output-partial-info-plist", tmpLocation])
     shutil.rmtree(xcassetsPath)
 
-    # tmpPlistDict = plistlib.readPlist(os.path.expanduser(tmpLocation))
-    # infoPlistDict = plistlib.readPlist(os.path.expanduser(infoLocation))
-    # merge = merge_two_dicts(tmpPlistDict, infoPlistDict)
-    #
-    # plistlib.writePlist(infoLocation, merge)
+    tmpPlistDict = plistlib.readPlist(os.path.expanduser(tmpLocation))
+    infoPlistDict = plistlib.readPlist(os.path.expanduser(infoLocation))
+    merge = merge_two_dicts(tmpPlistDict, infoPlistDict)
+
+    plistlib.writePlist(merge, infoLocation)
+
+    os.remove(tmpLocation)
 
 def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
