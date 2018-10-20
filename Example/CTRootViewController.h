@@ -1,0 +1,3 @@
+@interface CTRootViewController : UITableViewController
+
+@end

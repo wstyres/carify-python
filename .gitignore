@@ -1,1 +1,4 @@
 .DS_Store
+Example/obj
+Example/.theos
+Example/packages
