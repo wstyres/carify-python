@@ -9,26 +9,27 @@ import plistlib
 def main():
     if len(sys.argv) < 3:
         print("Usage: ./carify <Assets folder input> <Resources folder output>")
-    else:
-        assetsFolderPath = sys.argv[1]
-        resourcesFolderPath = sys.argv[2]
-        outputFolderPath = f"{resourcesFolderPath}/Assets.xcassets/"
+        return
 
-        createOutputDirectory(outputFolderPath);
+    assetsFolderPath = sys.argv[1]
+    resourcesFolderPath = sys.argv[2]
+    outputFolderPath = f"{resourcesFolderPath}/Assets.xcassets/"
 
-        dirs = [f.path for f in os.scandir(assetsFolderPath) if f.is_dir() ]
+    createOutputDirectory(outputFolderPath);
 
-        for directory in dirs:
-            dir = os.path.basename(os.path.normpath(directory))
-            if dir != ".DS_Store":
-                if dir == "AppIcon":
-                    createAppIconSet(directory, assetsFolderPath, outputFolderPath)
-                elif dir == "LaunchImage":
-                    createLaunchImageSet(directory, assetsFolderPath, outputFolderPath)
-                else:
-                    createBasicImageSet(directory, assetsFolderPath, outputFolderPath)
+    dirs = [f.path for f in os.scandir(assetsFolderPath) if f.is_dir() ]
 
-        createAssetsCarInDirectory(resourcesFolderPath, outputFolderPath)
+    for directory in dirs:
+        dir = os.path.basename(os.path.normpath(directory))
+        if dir != ".DS_Store":
+            if dir == "AppIcon":
+                createAppIconSet(directory, assetsFolderPath, outputFolderPath)
+            elif dir == "LaunchImage":
+                createLaunchImageSet(directory, assetsFolderPath, outputFolderPath)
+            else:
+                createBasicImageSet(directory, assetsFolderPath, outputFolderPath)
+
+    createAssetsCarInDirectory(resourcesFolderPath, outputFolderPath)
 
 def merge_two_dicts(x, y):
     z = x.copy()
@@ -237,4 +238,5 @@ def createOutputDirectory(outputDirPath):
 
     shutil.copy2(os.path.dirname(os.path.realpath(__file__)) + '/Base/Contents.json', outputDirPath + '/Contents.json')
 
-main();
+if __name__ == '__main__':
+    main()
