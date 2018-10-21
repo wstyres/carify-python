@@ -71,37 +71,27 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
         with Image.open(imagePath) as img:
             width, height = img.size
 
-        if width == 20:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "20x20", "ipad", "1x", outputPath);
-        elif width == 29:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "29x29", "ipad", "1x", outputPath);
-        elif width == 40:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "20x20", "iphone", "2x", outputPath);
-            insertAppIconIntoDictionaryForSize(imagePath, data, "20x20", "ipad", "2x", outputPath);
-            insertAppIconIntoDictionaryForSize(imagePath, data, "40x40", "ipad", "1x", outputPath);
-        elif width == 58:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "29x29", "iphone", "2x", outputPath);
-            insertAppIconIntoDictionaryForSize(imagePath, data, "29x29", "ipad", "2x", outputPath);
-        elif width == 60:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "20x20", "iphone", "3x", outputPath);
-        elif width == 76:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "76x76", "ipad", "1x", outputPath);
-        elif width == 80:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "40x40", "iphone", "2x", outputPath);
-            insertAppIconIntoDictionaryForSize(imagePath, data, "40x40", "ipad", "2x", outputPath);
-        elif width == 87:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "29x29", "iphone", "3x", outputPath);
-        elif width == 120:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "40x40", "iphone", "3x", outputPath);
-            insertAppIconIntoDictionaryForSize(imagePath, data, "60x60", "iphone", "2x", outputPath);
-        elif width == 152:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "76x76", "ipad", "2x", outputPath);
-        elif width == 167:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "83.5x83.5", "ipad", "2x", outputPath);
-        elif width == 180:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "60x60", "iphone", "3x", outputPath);
-        elif width == 1024:
-            insertAppIconIntoDictionaryForSize(imagePath, data, "1024x1024", "ios-marketing", "1x", outputPath);
+        iconSizeDictionary = {
+            "20": [( "20x20", "ipad", "2x" )],
+            "29": [( "29x29", "ipad", "2x" )],
+            "40": [( "20x20", "iphone", "2x" ), ( "20x20", "ipad", "2x" ), ( "40x40", "ipad", "1x" )],
+            "58": [( "29x29", "iphone", "2x" ), ( "29x29", "ipad", "2x" )],
+            "60": [( "20x20", "iphone", "3x" )],
+            "76": [( "76x76", "ipad", "1x" )],
+            "80": [( "40x40", "iphone", "2x" ), ( "40x40", "ipad", "2x" )],
+            "87": [( "29x29", "iphone", "3x" )],
+            "120": [( "40x40", "iphone", "3x" ), ( "60x60", "iphone", "2x" )],
+            "152": [( "76x76", "ipad", "2x" )],
+            "167": [( "83.5x83.5", "ipad", "2x" )],
+            "180": [( "60x60", "iphone", "3x" )],
+            "1024": [( "1024x1024", "ios-marketing", "1x" )],
+        }
+
+        values = iconSizeDictionary.get(f"{width}")
+        if values != None:
+            for value in values:
+                dims, model, scale = value
+                insertAppIconIntoDictionaryForSize(imagePath, data, dims, model, scale, outputPath);
 
     with open(outputPath + '/Contents.json', 'w') as outfile:
         json.dump(data, outfile)
@@ -128,36 +118,29 @@ def createLaunchImageSet(directory, assetsFolderPath, outputFolderPath):
         with Image.open(imagePath) as img:
             width, height = img.size
 
-        if width == 1242 and height == 2688 : # iPhone XS Max Portrait
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "2688h", "portrait", "3x", outputPath);
-        elif width == 828 and height == 1792: # iPhone XR Portrait
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "1792h", "portrait", "2x", outputPath);
-        elif width == 2688 and height == 1242: # iPhone XS Max Landscape
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "2688h", "landscape", "3x", outputPath);
-        elif width == 1792 and height == 828: # iPhone XR Portrait
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "1792h", "landscape", "2x", outputPath);
-        elif width == 1125 and height == 2436: # iPhone X[S] Portrait
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "2436h", "portrait", "3x", outputPath);
-        elif width == 2436 and height == 1125: # iPhone X[S] Landscape
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "2436h", "landscape", "3x", outputPath);
-        elif width == 1242 and height == 2208: # iPhone Portrait 5.5"
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "736h", "portrait", "3x", outputPath);
-        elif width == 750 and height == 1334: # iPhone Portrait 4.7"
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "667h", "portrait", "2x", outputPath);
-        elif width == 2208 and height == 1242: # iPhone Landscape 5.5"
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "736h", "landscape", "3x", outputPath);
-        elif width == 640 and height == 960: # iPhone Portrait 2x
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "", "portrait", "2x", outputPath);
-        elif width == 640 and height == 1136: # iPhone Portait Retina4
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "iphone", "retina4", "portrait", "2x", outputPath);
-        elif width == 678 and height == 1024: # iPad Portrait 1x
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "ipad", "", "portrait", "1x", outputPath);
-        elif width == 1536 and height == 2048: # iPad Portrait 2x
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "ipad", "", "portrait", "2x", outputPath);
-        elif width == 1024 and height == 768: # iPad Landscape 1x
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "ipad", "", "landscape", "1x", outputPath);
-        elif width == 2048 and height == 2536: # iPad Landscape 2x
-            insertLaunchImageIntoDictionaryForSize(imagePath, data, "full-screen", "ipad", "", "landscape", "2x", outputPath);
+        launchScreenSizeDictionary = {
+            "1242x2688": [( "full-screen", "iphone", "2688h", "portrait", "3x" )], # iPhone XS Max Portrait
+            "828x1792": [( "full-screen", "iphone", "1792h", "portrait", "2x" )], # iPhone XR Portrait
+            "2688x1242": [( "full-screen", "iphone", "2688h", "landscape", "3x" )], # iPhone XS Max Landscape
+            "1792x828": [( "full-screen", "iphone", "1792h", "landscape", "2x" )], # iPhone XR Landscape
+            "1125x2436": [( "full-screen", "iphone", "2436h", "portrait", "3x" )], # iPhone X[S] Portrait
+            "2436x1125": [( "full-screen", "iphone", "2436h", "landscape", "3x" )], # iPhone X[S] Landscape
+            "1242x2208": [( "full-screen", "iphone", "736h", "portrait", "3x" )], # iPhone Portrait 5.5"
+            "750x1334": [( "full-screen", "iphone", "667h", "portrait", "2x" )], # iPhone Portrait 4.7"
+            "2208x1242": [( "full-screen", "iphone", "736h", "landscape", "3x" )], # iPhone Landscape 5.5"
+            "640x960": [( "full-screen", "iphone", "", "portrait", "2x" )], # iPhone Portrait 2x
+            "640x1136": [( "full-screen", "iphone", "retina4", "portrait", "2x" )], # iPhone Portait Retina4
+            "768x1024": [( "full-screen", "ipad", "", "portrait", "1x" )], # iPad Portrait 1x
+            "1536x2048": [( "full-screen", "ipad", "", "portrait", "2x" )], # iPad Portrait 2x
+            "1024x768": [( "full-screen", "ipad", "", "landscape", "1x" )], # iPad Landscape 1x
+            "2048x1536": [( "full-screen", "ipad", "", "landscape", "2x" )], # iPad Landscape 2x
+        }
+
+        values = launchScreenSizeDictionary.get(f"{width}x{height}")
+        if values != None:
+            for value in values:
+                extent, model, subtype, orientation, scale = value
+                insertLaunchImageIntoDictionaryForSize(imagePath, data, extent, model, subtype, orientation, scale, outputPath);
 
     with open(outputPath + '/Contents.json', 'w') as outfile:
         json.dump(data, outfile)
