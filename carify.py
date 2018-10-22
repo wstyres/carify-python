@@ -41,7 +41,7 @@ def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
     tmpLocation = os.path.join(expandedResourcesDirectory, "tmp.plist")
     infoLocation = os.path.join(expandedResourcesDirectory, "Info.plist")
     call(["/Applications/Xcode.app/Contents/Developer/usr/bin/actool", xcassetsPath, "--compile", resourcesDirectory, "--platform", "iphoneos", "--minimum-deployment-target", "8.0", "--app-icon", "AppIcon", "--launch-image", "LaunchImage", "--output-partial-info-plist", tmpLocation])
-    #shutil.rmtree(xcassetsPath)
+    shutil.rmtree(xcassetsPath)
 
     tmpPlistDict = plistlib.readPlist(tmpLocation)
     infoPlistDict = plistlib.readPlist(infoLocation)
@@ -74,8 +74,8 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
             width, height = img.size
 
         iconSizeDictionary = {
-            "20": [( "20x20", "ipad", "2x" )],
-            "29": [( "29x29", "ipad", "2x" )],
+            "20": [( "20x20", "ipad", "1x" )],
+            "29": [( "29x29", "ipad", "1x" )],
             "40": [( "20x20", "iphone", "2x" ), ( "20x20", "ipad", "2x" ), ( "40x40", "ipad", "1x" )],
             "58": [( "29x29", "iphone", "2x" ), ( "29x29", "ipad", "2x" )],
             "60": [( "20x20", "iphone", "3x" )],
