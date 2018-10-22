@@ -65,9 +65,8 @@ def createAppIconSet(directory: str, assetsFolderPath: str, outputFolderPath: st
         print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
     baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base", "AppIcon.json")
-    jsonString = open(baseJsonPath).read()
-
-    data = json.loads(jsonString)
+    with open(baseJsonPath) as jsonString:
+        data = json.load(jsonString)
 
     for image in images:
         if image == ".DS_Store":
@@ -112,9 +111,8 @@ def createLaunchImageSet(directory: str, assetsFolderPath: str, outputFolderPath
         print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
     baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base", "LaunchImage.json")
-    jsonString = open(baseJsonPath).read()
-
-    data = json.loads(jsonString)
+    with open(baseJsonPath) as jsonString:
+        data = json.load(jsonString)
 
     for image in images:
         if image == ".DS_Store":
@@ -163,9 +161,8 @@ def createBasicImageSet(directory: str, assetsFolderPath: str, outputFolderPath:
         print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
     baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base", "Universal.json")
-    jsonString = open(baseJsonPath).read()
-
-    data = json.loads(jsonString)
+    with open(baseJsonPath) as jsonString:
+        data = json.load(jsonString)
 
     for image in images:
         imagePath = os.path.join(directory, image)
