@@ -13,7 +13,7 @@ def main():
 
     assetsFolderPath = sys.argv[1]
     resourcesFolderPath = sys.argv[2]
-    outputFolderPath = f"{resourcesFolderPath}/Assets.xcassets/"
+    outputFolderPath = os.path.join(resourcesFolderPath, "Assets.xcassets/")
 
     createOutputDirectory(outputFolderPath);
 
@@ -37,13 +37,14 @@ def merge_two_dicts(x, y):
     return z
 
 def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
-    tmpLocation = f"{resourcesDirectory}/tmp.plist"
-    infoLocation = f"{resourcesDirectory}/Info.plist"
+    expandedResourcesDirectory = os.path.expanduser(resourcesDirectory)
+    tmpLocation = os.path.join(expandedResourcesDirectory, "tmp.plist")
+    infoLocation = os.path.join(expandedResourcesDirectory, "Info.plist")
     call(["/Applications/Xcode.app/Contents/Developer/usr/bin/actool", xcassetsPath, "--compile", resourcesDirectory, "--platform", "iphoneos", "--minimum-deployment-target", "8.0", "--app-icon", "AppIcon", "--launch-image", "LaunchImage", "--output-partial-info-plist", tmpLocation])
     shutil.rmtree(xcassetsPath)
 
-    tmpPlistDict = plistlib.readPlist(os.path.expanduser(tmpLocation))
-    infoPlistDict = plistlib.readPlist(os.path.expanduser(infoLocation))
+    tmpPlistDict = plistlib.readPlist(tmpLocation)
+    infoPlistDict = plistlib.readPlist(infoLocation)
     merge = merge_two_dicts(tmpPlistDict, infoPlistDict)
 
     plistlib.writePlist(merge, infoLocation)
@@ -52,15 +53,15 @@ def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
 
 def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-    outputPath =  f"{outputFolderPath}AppIcon.appiconset"
+    outputPath =  os.path.join(outputFolderPath, "AppIcon.appiconset")
 
     try:
         os.mkdir(outputPath)
     except OSError as e:
-        print(f"Creation of the directory {outputPath} failed")
-        print(e.strerror)
+        print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
-    jsonString = open(os.path.dirname(os.path.realpath(__file__)) + '/Base/AppIcon.json').read()
+    baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base/AppIcon.json")
+    jsonString = open(baseJsonPath).read()
 
     data = json.loads(jsonString)
 
@@ -68,7 +69,7 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
         if image == ".DS_Store":
             continue
 
-        imagePath = f"{directory}/{image}"
+        imagePath = os.path.join(directory, image)
         with Image.open(imagePath) as img:
             width, height = img.size
 
@@ -94,20 +95,21 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
                 dims, model, scale = value
                 insertAppIconIntoDictionaryForSize(imagePath, data, dims, model, scale, outputPath);
 
-    with open(outputPath + '/Contents.json', 'w') as outfile:
+    outputJsonPath = os.path.join(outputPath, "Contents.json")
+    with open(outputJsonPath, 'w') as outfile:
         json.dump(data, outfile)
 
 def createLaunchImageSet(directory, assetsFolderPath, outputFolderPath):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-    outputPath =  f"{outputFolderPath}LaunchImage.launchimage"
+    outputPath = os.path.join(outputFolderPath, "LaunchImage.launchimage")
 
     try:
         os.mkdir(outputPath)
     except OSError as e:
-        print(f"Creation of the directory {outputPath} failed")
-        print(e.strerror)
+        print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
-    jsonString = open(os.path.dirname(os.path.realpath(__file__)) + '/Base/LaunchImage.json').read()
+    baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base/LaunchImage.json")
+    jsonString = open(baseJsonPath).read()
 
     data = json.loads(jsonString)
 
@@ -115,7 +117,7 @@ def createLaunchImageSet(directory, assetsFolderPath, outputFolderPath):
         if image == ".DS_Store":
             continue
 
-        imagePath = f"{directory}/{image}"
+        imagePath = os.path.join(directory, image)
         with Image.open(imagePath) as img:
             width, height = img.size
 
@@ -143,26 +145,28 @@ def createLaunchImageSet(directory, assetsFolderPath, outputFolderPath):
                 extent, model, subtype, orientation, scale = value
                 insertLaunchImageIntoDictionaryForSize(imagePath, data, extent, model, subtype, orientation, scale, outputPath);
 
-    with open(outputPath + '/Contents.json', 'w') as outfile:
+    outputJsonPath = os.path.join(outputPath, "Contents.json")
+    with open(outputJsonPath, 'w') as outfile:
         json.dump(data, outfile)
 
 def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     dir = os.path.basename(os.path.normpath(directory))
-    outputPath = f"{outputFolderPath}/{dir}.imageset"
+    imageSetName = f"{dir}.imageset"
+    outputPath = os.path.join(outputFolderPath, imageSetName)
 
     try:
         os.mkdir(outputPath)
     except OSError as e:
-        print(f"Creation of the directory {outputPath} failed")
-        print(e.strerror)
+        print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
-    jsonString = open(os.path.dirname(os.path.realpath(__file__)) + '/Base/Universal.json').read()
+    baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base", "Universal.json")
+    jsonString = open(baseJsonPath).read()
 
     data = json.loads(jsonString)
 
     for image in images:
-        imagePath = f"{directory}/{image}"
+        imagePath = os.path.join(directory, image)
 
         if image == ".DS_Store":
             continue
@@ -184,48 +188,54 @@ def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
             else:
                 print(f"Improper scale for file {imageFilename}")
 
-            data["images"] = images
-            shutil.copy2(directory + '/' + image, outputPath + '/' + image)
-        else:
+            sourcePath = os.path.join(directory, image)
+            destinationPath = os.path.join(outputPath, image)
+            shutil.copy2(sourcePath, destinationPath)
+        else: #We're assuming this is a 1x image if there is no included scale
             images[0]["filename"] = image
-            data["images"] = images
-            shutil.copy2(directory + '/' + image, outputPath + '/' + image)
 
-        with open(outputPath + '/Contents.json', 'w') as outfile:
+            sourcePath = os.path.join(directory, image)
+            destinationPath = os.path.join(outputPath, image)
+            shutil.copy2(sourcePath, destinationPath)
+
+        outputJsonPath = os.path.join(outputPath, "Contents.json")
+        with open(outputJsonPath, 'w') as outfile:
             json.dump(data, outfile)
 
-def insertLaunchImageIntoDictionaryForSize(filepath, dictionary, extent, idiom, subtype, orientation, scale, output):
+def insertLaunchImageIntoDictionaryForSize(sourcePath, dictionary, extent, idiom, subtype, orientation, scale, output):
     images = dictionary["images"]
-    filename = os.path.basename(os.path.normpath(filepath))
+    filename = os.path.basename(os.path.normpath(sourcePath))
 
     for dict in images:
-        if (dict["extent"] == extent and dict["idiom"] == idiom and dict["orientation"] == orientation and dict["scale"] == scale):
-            if 'subtype' in dict:
-                if (dict["subtype"] == subtype):
-                    dict["filename"] = filename
-                else:
-                    dict["filename"] = filename
+        if dict["extent"] == extent and dict["idiom"] == idiom and dict["orientation"] == orientation and dict["scale"] == scale:
+            if 'subtype' in dict and dict["subtype"] == subtype:
+                dict["filename"] = filename
+            else:
+                dict["filename"] = filename
 
-    shutil.copy2(filepath, f"{output}/{filename}")
+    destinationPath = os.path.join(output, filename)
+    shutil.copy2(sourcePath, destinationPath)
 
-def insertAppIconIntoDictionaryForSize(filepath, dictionary, size, idiom, scale, output):
+def insertAppIconIntoDictionaryForSize(sourcePath, dictionary, size, idiom, scale, output):
     images = dictionary["images"]
-    filename = os.path.basename(os.path.normpath(filepath))
+    filename = os.path.basename(os.path.normpath(sourcePath))
 
     for dict in images:
         if (dict["size"] == size and dict["idiom"] == idiom and dict["scale"] == scale):
             dict["filename"] = filename
 
-    shutil.copy2(filepath, f"{output}/{filename}")
+    destinationPath = os.path.join(output, filename)
+    shutil.copy2(sourcePath, destinationPath)
 
 def createOutputDirectory(outputDirPath):
     try:
         os.mkdir(outputDirPath)
     except OSError as e:
-        print(f"Creation of the directory {outputDirPath} failed")
-        print(e.strerror)
+        print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
-    shutil.copy2(os.path.dirname(os.path.realpath(__file__)) + '/Base/Contents.json', outputDirPath + '/Contents.json')
+    basePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Base', 'Contents.json')
+    outputPath = os.path.join(outputDirPath, 'Contents.json')
+    shutil.copy2(basePath, outputPath)
 
 if __name__ == '__main__':
     main()
