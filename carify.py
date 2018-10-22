@@ -198,8 +198,7 @@ def insertLaunchImageIntoDictionaryForSize(filepath, dictionary, extent, idiom, 
     images = dictionary["images"]
     filename = os.path.basename(os.path.normpath(filepath))
 
-    i = 0
-    for dict in images:
+    for i, dict in enumerate(images):
         if 'subtype' in dict:
             if (dict["extent"] == extent and dict["idiom"] == idiom and dict["subtype"] == subtype and dict["orientation"] == orientation and dict["scale"] == scale):
                 dict["filename"] = filename
@@ -218,8 +217,7 @@ def insertAppIconIntoDictionaryForSize(filepath, dictionary, size, idiom, scale,
     images = dictionary["images"]
     filename = os.path.basename(os.path.normpath(filepath))
 
-    i = 0
-    for dict in images:
+    for i, dict in enumerate(images):
         if (dict["size"] == size and dict["idiom"] == idiom and dict["scale"] == scale):
             dict["filename"] = filename
             images[i] = dict
