@@ -5,6 +5,7 @@ import json
 from PIL import Image
 from subprocess import call
 import plistlib
+from typing import Dict, Tuple
 
 def main():
     if len(sys.argv) < 3:
@@ -21,22 +22,25 @@ def main():
 
     for directory in dirs:
         dir = os.path.basename(os.path.normpath(directory))
-        if dir != ".DS_Store":
-            if dir == "AppIcon":
-                createAppIconSet(directory, assetsFolderPath, outputFolderPath)
-            elif dir == "LaunchImage":
-                createLaunchImageSet(directory, assetsFolderPath, outputFolderPath)
-            else:
-                createBasicImageSet(directory, assetsFolderPath, outputFolderPath)
+
+        if dir == ".DS_Store":
+            continue
+
+        if dir == "AppIcon":
+            createAppIconSet(directory, assetsFolderPath, outputFolderPath)
+        elif dir == "LaunchImage":
+            createLaunchImageSet(directory, assetsFolderPath, outputFolderPath)
+        else:
+            createBasicImageSet(directory, assetsFolderPath, outputFolderPath)
 
     createAssetsCarInDirectory(resourcesFolderPath, outputFolderPath)
 
-def merge_two_dicts(x, y):
+def merge_two_dicts(x: Dict, y: Dict) -> Dict:
     z = x.copy()
     z.update(y)
     return z
 
-def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
+def createAssetsCarInDirectory(resourcesDirectory: str, xcassetsPath: str):
     expandedResourcesDirectory = os.path.expanduser(resourcesDirectory)
     tmpLocation = os.path.join(expandedResourcesDirectory, "tmp.plist")
     infoLocation = os.path.join(expandedResourcesDirectory, "Info.plist")
@@ -51,7 +55,7 @@ def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
 
     os.remove(tmpLocation)
 
-def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
+def createAppIconSet(directory: str, assetsFolderPath: str, outputFolderPath: str):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     outputPath =  os.path.join(outputFolderPath, "AppIcon.appiconset")
 
@@ -98,7 +102,7 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
     with open(outputJsonPath, 'w') as outfile:
         json.dump(data, outfile)
 
-def createLaunchImageSet(directory, assetsFolderPath, outputFolderPath):
+def createLaunchImageSet(directory: str, assetsFolderPath: str, outputFolderPath: str):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     outputPath = os.path.join(outputFolderPath, "LaunchImage.launchimage")
 
@@ -147,7 +151,7 @@ def createLaunchImageSet(directory, assetsFolderPath, outputFolderPath):
     with open(outputJsonPath, 'w') as outfile:
         json.dump(data, outfile)
 
-def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
+def createBasicImageSet(directory: str, assetsFolderPath: str, outputFolderPath: str):
     images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     dir = os.path.basename(os.path.normpath(directory))
     imageSetName = f"{dir}.imageset"
@@ -200,7 +204,7 @@ def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
         with open(outputJsonPath, 'w') as outfile:
             json.dump(data, outfile)
 
-def insertImage(type, imageSourcePath, assetsOutputPath, dictionary, searchTerms):
+def insertImage(type: str, imageSourcePath: str, assetsOutputPath: str, dictionary: Dict, searchTerms: Tuple):
     images = dictionary["images"]
     filename = os.path.basename(os.path.normpath(imageSourcePath))
 
@@ -221,26 +225,6 @@ def insertImage(type, imageSourcePath, assetsOutputPath, dictionary, searchTerms
 
     destinationPath = os.path.join(assetsOutputPath, filename)
     shutil.copy2(imageSourcePath, destinationPath)
-
-# def insertLaunchImageIntoDictionaryForSize(sourcePath, dictionary, extent, idiom, subtype, orientation, scale, output):
-#     images = dictionary["images"]
-#     filename = os.path.basename(os.path.normpath(sourcePath))
-#
-#     for dict in images:
-#
-#
-#     destinationPath = os.path.join(output, filename)
-#     shutil.copy2(sourcePath, destinationPath)
-#
-# def insertAppIconIntoDictionaryForSize(sourcePath, dictionary, size, idiom, scale, output):
-#     images = dictionary["images"]
-#     filename = os.path.basename(os.path.normpath(sourcePath))
-#
-#     for dict in images:
-#
-#
-#     destinationPath = os.path.join(output, filename)
-#     shutil.copy2(sourcePath, destinationPath)
 
 def createOutputDirectory(outputDirPath):
     try:
