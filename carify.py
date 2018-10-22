@@ -41,7 +41,7 @@ def createAssetsCarInDirectory(resourcesDirectory, xcassetsPath):
     tmpLocation = os.path.join(expandedResourcesDirectory, "tmp.plist")
     infoLocation = os.path.join(expandedResourcesDirectory, "Info.plist")
     call(["/Applications/Xcode.app/Contents/Developer/usr/bin/actool", xcassetsPath, "--compile", resourcesDirectory, "--platform", "iphoneos", "--minimum-deployment-target", "8.0", "--app-icon", "AppIcon", "--launch-image", "LaunchImage", "--output-partial-info-plist", tmpLocation])
-    shutil.rmtree(xcassetsPath)
+    #shutil.rmtree(xcassetsPath)
 
     tmpPlistDict = plistlib.readPlist(tmpLocation)
     infoPlistDict = plistlib.readPlist(infoLocation)
@@ -92,8 +92,7 @@ def createAppIconSet(directory, assetsFolderPath, outputFolderPath):
         values = iconSizeDictionary.get(f"{width}")
         if values != None:
             for value in values:
-                dims, model, scale = value
-                insertAppIconIntoDictionaryForSize(imagePath, data, dims, model, scale, outputPath);
+                insertImage("appicon", imagePath, outputPath, data, value);
 
     outputJsonPath = os.path.join(outputPath, "Contents.json")
     with open(outputJsonPath, 'w') as outfile:
@@ -142,8 +141,7 @@ def createLaunchImageSet(directory, assetsFolderPath, outputFolderPath):
         values = launchScreenSizeDictionary.get(f"{width}x{height}")
         if values != None:
             for value in values:
-                extent, model, subtype, orientation, scale = value
-                insertLaunchImageIntoDictionaryForSize(imagePath, data, extent, model, subtype, orientation, scale, outputPath);
+                insertImage("launchimage", imagePath, outputPath, data, value);
 
     outputJsonPath = os.path.join(outputPath, "Contents.json")
     with open(outputJsonPath, 'w') as outfile:
@@ -202,36 +200,53 @@ def createBasicImageSet(directory, assetsFolderPath, outputFolderPath):
         with open(outputJsonPath, 'w') as outfile:
             json.dump(data, outfile)
 
-def insertLaunchImageIntoDictionaryForSize(sourcePath, dictionary, extent, idiom, subtype, orientation, scale, output):
+def insertImage(type, imageSourcePath, assetsOutputPath, dictionary, searchTerms):
     images = dictionary["images"]
-    filename = os.path.basename(os.path.normpath(sourcePath))
+    filename = os.path.basename(os.path.normpath(imageSourcePath))
 
     for dict in images:
-        if dict["extent"] == extent and dict["idiom"] == idiom and dict["orientation"] == orientation and dict["scale"] == scale:
-            if 'subtype' in dict and dict["subtype"] == subtype:
+        if type == "appicon":
+            size, idiom, scale = searchTerms
+            if dict["size"] == size and dict["idiom"] == idiom and dict["scale"] == scale:
                 dict["filename"] = filename
-            else:
-                dict["filename"] = filename
+        elif type == "launchimage":
+            extent, idiom, subtype, orientation, scale = searchTerms
+            if dict["extent"] == extent and dict["idiom"] == idiom and dict["orientation"] == orientation and dict["scale"] == scale:
+                if 'subtype' in dict and dict["subtype"] == subtype:
+                    dict["filename"] = filename
+                else:
+                    dict["filename"] = filename
+        else:
+            print(f"Improper type {type}")
 
-    destinationPath = os.path.join(output, filename)
-    shutil.copy2(sourcePath, destinationPath)
+    destinationPath = os.path.join(assetsOutputPath, filename)
+    shutil.copy2(imageSourcePath, destinationPath)
 
-def insertAppIconIntoDictionaryForSize(sourcePath, dictionary, size, idiom, scale, output):
-    images = dictionary["images"]
-    filename = os.path.basename(os.path.normpath(sourcePath))
-
-    for dict in images:
-        if (dict["size"] == size and dict["idiom"] == idiom and dict["scale"] == scale):
-            dict["filename"] = filename
-
-    destinationPath = os.path.join(output, filename)
-    shutil.copy2(sourcePath, destinationPath)
+# def insertLaunchImageIntoDictionaryForSize(sourcePath, dictionary, extent, idiom, subtype, orientation, scale, output):
+#     images = dictionary["images"]
+#     filename = os.path.basename(os.path.normpath(sourcePath))
+#
+#     for dict in images:
+#
+#
+#     destinationPath = os.path.join(output, filename)
+#     shutil.copy2(sourcePath, destinationPath)
+#
+# def insertAppIconIntoDictionaryForSize(sourcePath, dictionary, size, idiom, scale, output):
+#     images = dictionary["images"]
+#     filename = os.path.basename(os.path.normpath(sourcePath))
+#
+#     for dict in images:
+#
+#
+#     destinationPath = os.path.join(output, filename)
+#     shutil.copy2(sourcePath, destinationPath)
 
 def createOutputDirectory(outputDirPath):
     try:
         os.mkdir(outputDirPath)
     except OSError as e:
-        print(f"Creation of the directory {outputPath} failed, {e.strerror}")
+        print(f"Creation of the directory {outputDirPath} failed, {e.strerror}")
 
     basePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Base', 'Contents.json')
     outputPath = os.path.join(outputDirPath, 'Contents.json')
