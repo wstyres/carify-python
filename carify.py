@@ -199,12 +199,12 @@ def insertLaunchImageIntoDictionaryForSize(filepath, dictionary, extent, idiom, 
     filename = os.path.basename(os.path.normpath(filepath))
 
     for dict in images:
-        if 'subtype' in dict:
-            if (dict["extent"] == extent and dict["idiom"] == idiom and dict["subtype"] == subtype and dict["orientation"] == orientation and dict["scale"] == scale):
-                dict["filename"] = filename
-        else:
-            if (dict["extent"] == extent and dict["idiom"] == idiom and dict["orientation"] == orientation and dict["scale"] == scale):
-                dict["filename"] = filename
+        if (dict["extent"] == extent and dict["idiom"] == idiom and dict["orientation"] == orientation and dict["scale"] == scale):
+            if 'subtype' in dict:
+                if (dict["subtype"] == subtype):
+                    dict["filename"] = filename
+                else:
+                    dict["filename"] = filename
 
     shutil.copy2(filepath, f"{output}/{filename}")
 
