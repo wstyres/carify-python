@@ -14,7 +14,7 @@ def main():
 
     assetsFolderPath = sys.argv[1]
     resourcesFolderPath = sys.argv[2]
-    outputFolderPath = os.path.join(resourcesFolderPath, "Assets.xcassets/")
+    outputFolderPath = os.path.join(resourcesFolderPath, "Assets.xcassets")
 
     createOutputDirectory(outputFolderPath);
 
@@ -64,7 +64,7 @@ def createAppIconSet(directory: str, assetsFolderPath: str, outputFolderPath: st
     except OSError as e:
         print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
-    baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base/AppIcon.json")
+    baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base", "AppIcon.json")
     jsonString = open(baseJsonPath).read()
 
     data = json.loads(jsonString)
@@ -111,7 +111,7 @@ def createLaunchImageSet(directory: str, assetsFolderPath: str, outputFolderPath
     except OSError as e:
         print(f"Creation of the directory {outputPath} failed, {e.strerror}")
 
-    baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base/LaunchImage.json")
+    baseJsonPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Base", "LaunchImage.json")
     jsonString = open(baseJsonPath).read()
 
     data = json.loads(jsonString)
