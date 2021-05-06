@@ -228,7 +228,7 @@ def insertImage(type: str, imageSourcePath: str, assetsOutputPath: str, dictiona
 
 def createOutputDirectory(outputDirPath):
     try:
-        os.mkdir(outputDirPath)
+        os.makedirs(outputDirPath)
     except OSError as e:
         print(f"Creation of the directory {outputDirPath} failed, {e.strerror}")
 
