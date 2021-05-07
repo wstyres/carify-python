@@ -47,11 +47,14 @@ def createAssetsCarInDirectory(resourcesDirectory: str, xcassetsPath: str):
     call(["/Applications/Xcode.app/Contents/Developer/usr/bin/actool", xcassetsPath, "--compile", resourcesDirectory, "--platform", "iphoneos", "--minimum-deployment-target", "8.0", "--app-icon", "AppIcon", "--launch-image", "LaunchImage", "--output-partial-info-plist", tmpLocation])
     shutil.rmtree(xcassetsPath)
 
-    tmpPlistDict = plistlib.readPlist(tmpLocation)
-    infoPlistDict = plistlib.readPlist(infoLocation)
+    tmpPlistDict = plistlib.load(open(tmpLocation,'rb'))
+    try:
+        infoPlistDict = plistlib.load(open(infoLocation,'rb'))
+    except:
+        infoPlistDict = {}
     merge = merge_two_dicts(tmpPlistDict, infoPlistDict)
 
-    plistlib.writePlist(merge, infoLocation)
+    plistlib.dump(merge, open(infoLocation,'wb'))
 
     os.remove(tmpLocation)
 
@@ -225,7 +228,7 @@ def insertImage(type: str, imageSourcePath: str, assetsOutputPath: str, dictiona
 
 def createOutputDirectory(outputDirPath):
     try:
-        os.mkdir(outputDirPath)
+        os.makedirs(outputDirPath)
     except OSError as e:
         print(f"Creation of the directory {outputDirPath} failed, {e.strerror}")
 
